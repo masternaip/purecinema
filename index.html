@@ -1,14 +1,1506 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=https://doodpl.site/4vB6q">
-  <script>
-    window.location.replace("https://doodpl.site/4vB6q");
-  </script>
-  <title>Redirecting...</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NETFLIX Clone</title>
+    <!-- Lucide Icons for search, film, close, heart, play, tv, arrow-left -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Base styles */
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: #1a202c; /* bg-gray-800 */
+            color: #e2e8f0; /* text-gray-100 */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header styles */
+        header {
+            position: sticky;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #171923; /* bg-gray-900 */
+            color: #fff;
+            padding: 1.5rem 2rem; /* p-6 md:p-8 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            z-index: 50;
+        }
+
+        .header-container {
+            max-width: 1280px; /* container mx-auto */
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            flex-direction: column; /* flex-col */
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (min-width: 768px) { /* md */
+            .header-container {
+                flex-direction: row; /* md:flex-row */
+            }
+        }
+
+        h1 {
+            font-size: 2.25rem; /* text-4xl */
+            font-weight: 800; /* font-extrabold */
+            display: flex;
+            align-items: center;
+            gap: 0.75rem; /* gap-3 */
+            margin-bottom: 1rem; /* mb-4 */
+            color: #e53e3e; /* text-red-600 */
+        }
+
+        @media (min-width: 768px) { /* md */
+            h1 {
+                font-size: 3rem; /* md:text-5xl */
+                margin-bottom: 0; /* md:mb-0 */
+            }
+        }
+
+        .search-form {
+            display: flex;
+            width: 100%; /* w-full */
+            max-width: 28rem; /* max-w-md */
+        }
+
+        @media (min-width: 768px) { /* md */
+            .search-form {
+                width: auto; /* md:w-auto */
+            }
+        }
+
+        .search-input {
+            padding: 0.75rem; /* p-3 */
+            border-top-left-radius: 9999px; /* rounded-l-full */
+            border-bottom-left-radius: 9999px; /* rounded-l-full */
+            border: none;
+            outline: none;
+            flex-grow: 1;
+            color: #2d3748; /* text-gray-900 */
+            background-color: #edf2f7; /* bg-gray-200 */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06); /* shadow-inner */
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .search-input::placeholder {
+            color: #a0aec0; /* placeholder-gray-500 */
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 0 2px #e53e3e; /* focus:ring-2 focus:ring-red-600 */
+        }
+
+        .search-button {
+            background-color: #e53e3e; /* bg-red-600 */
+            color: #fff;
+            padding: 0.75rem; /* p-3 */
+            border-top-right-radius: 9999px; /* rounded-r-full */
+            border-bottom-right-radius: 9999px; /* rounded-r-full */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: background-color 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #c53030; /* hover:bg-red-700 */
+        }
+
+        /* Navigation tabs */
+        nav {
+            max-width: 1280px; /* container mx-auto */
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 1.5rem; /* mt-6 */
+        }
+
+        .nav-list {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 1rem; /* space-x-4 */
+        }
+
+        .nav-button {
+            padding: 0.75rem 1.5rem; /* px-6 py-3 */
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 600; /* font-semibold */
+            transition: all 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+
+        .nav-button.active {
+            background-color: #e53e3e; /* bg-red-600 */
+            color: #fff;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+
+        .nav-button:not(.active) {
+            background-color: #4a5568; /* bg-gray-700 */
+            color: #cbd5e0; /* text-gray-200 */
+        }
+
+        .nav-button:not(.active):hover {
+            background-color: #2d3748; /* hover:bg-gray-600 */
+        }
+
+        /* Main content */
+        main {
+            flex-grow: 1;
+            max-width: 1280px; /* container mx-auto */
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1.5rem; /* p-6 */
+            padding-top: 8rem; /* py-10 pt-32 */
+            padding-bottom: 5rem; /* pb-20 */
+        }
+
+        .error-message {
+            text-align: center;
+            color: #fc8181; /* text-red-500 */
+            font-size: 1.25rem; /* text-xl */
+            padding: 2rem; /* p-8 */
+            background-color: #171923; /* bg-gray-900 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-md */
+            margin-bottom: 2rem; /* mb-8 */
+            border: 1px solid #c53030; /* border border-red-700 */
+        }
+
+        section {
+            margin-bottom: 3rem; /* mb-12 */
+        }
+
+        h2 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #fff;
+            margin-bottom: 1.5rem; /* mb-6 */
+            display: flex;
+            align-items: center;
+        }
+
+        h2 .lucide { /* For TV icon */
+            margin-right: 0.75rem; /* mr-3 */
+            color: #e53e3e; /* text-red-600 */
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 10rem; /* h-40 */
+        }
+
+        .loading-spinner .lucide {
+            animation: spin 1s linear infinite; /* animate-spin */
+            color: #e53e3e; /* text-red-600 */
+            width: 2.5rem; /* size={40} */
+            height: 2.5rem; /* size={40} */
+        }
+
+        .loading-spinner p {
+            font-size: 1.25rem; /* text-xl */
+            color: #e53e3e; /* text-red-600 */
+            margin-left: 1rem; /* ml-4 */
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .no-results-message {
+            text-align: center;
+            color: #a0aec0; /* text-gray-400 */
+            font-size: 1.25rem; /* text-xl */
+            padding: 2rem; /* p-8 */
+            background-color: #171923; /* bg-gray-900 */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-md */
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* Responsive grid */
+            gap: 2rem; /* gap-8 */
+        }
+
+        @media (min-width: 640px) { /* sm */
+            .media-grid {
+                grid-template-columns: repeat(2, 1fr); /* sm:grid-cols-2 */
+            }
+        }
+
+        @media (min-width: 768px) { /* md */
+            .media-grid {
+                grid-template-columns: repeat(3, 1fr); /* md:grid-cols-3 */
+            }
+        }
+
+        @media (min-width: 1024px) { /* lg */
+            .media-grid {
+                grid-template-columns: repeat(4, 1fr); /* lg:grid-cols-4 */
+            }
+        }
+
+        @media (min-width: 1280px) { /* xl */
+            .media-grid {
+                grid-template-columns: repeat(5, 1fr); /* xl:grid-cols-5 */
+            }
+        }
+
+        /* Media Card */
+        .media-card {
+            background-color: #171923; /* bg-gray-900 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            overflow: hidden;
+            transform: scale(1);
+            transition: all 0.3s ease-in-out; /* transform transition-all duration-300 */
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .media-card:hover {
+            transform: scale(1.03); /* hover:scale-[1.03] */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* hover:shadow-2xl */
+        }
+
+        .media-card-image-container {
+            position: relative;
+            width: 100%;
+            height: 18rem; /* h-72 */
+            overflow: hidden;
+        }
+
+        .media-card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out; /* transition-transform duration-300 */
+        }
+
+        .media-card:hover .media-card-image {
+            transform: scale(1.1); /* group-hover:scale-110 */
+        }
+
+        .media-card-overlay {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0); /* bg-black bg-opacity-0 */
+            transition: background-color 0.3s ease-in-out; /* transition-opacity duration-300 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .media-card:hover .media-card-overlay {
+            background-color: rgba(0, 0, 0, 0.4); /* group-hover:bg-opacity-40 */
+        }
+
+        .favorite-button {
+            position: absolute;
+            top: 0.75rem; /* top-3 */
+            right: 0.75rem; /* right-3 */
+            padding: 0.5rem; /* p-2 */
+            border-radius: 9999px; /* rounded-full */
+            background-color: rgba(0, 0, 0, 0.6); /* bg-black bg-opacity-60 */
+            color: #fff;
+            transition: color 0.2s ease-in-out; /* transition-colors duration-200 */
+            z-index: 10;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .favorite-button:hover {
+            color: #ef4444; /* hover:text-red-500 */
+        }
+
+        .play-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out; /* transition-opacity duration-300 */
+            border: none;
+            background: none;
+            cursor: pointer;
+            color: #fff; /* text-white */
+        }
+
+        .media-card:hover .play-button {
+            opacity: 1; /* group-hover:opacity-100 */
+        }
+
+        .play-button .lucide {
+            width: 3.75rem; /* size={60} */
+            height: 3.75rem; /* size={60} */
+            opacity: 0.8; /* opacity-80 */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .play-button .lucide:hover {
+            opacity: 1; /* hover:opacity-100 */
+        }
+
+        .media-card-info {
+            padding: 1rem; /* p-4 */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            color: #fff;
+        }
+
+        .media-card-title {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 0.25rem; /* mb-1 */
+            line-height: 1.25; /* leading-tight */
+        }
+
+        .media-card-year {
+            color: #a0aec0; /* text-gray-400 */
+            font-size: 0.875rem; /* text-sm */
+        }
+
+        /* Pagination controls */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem; /* gap-4 */
+            margin-top: 2.5rem; /* mt-10 */
+        }
+
+        .pagination-button {
+            background-color: #e53e3e; /* bg-red-600 */
+            color: #fff;
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1.25rem; /* py-2 px-5 */
+            border-radius: 9999px; /* rounded-full */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: background-color 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem; /* text-base */
+        }
+
+        .pagination-button:hover:not(:disabled) {
+            background-color: #c53030; /* hover:bg-red-700 */
+        }
+
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-info {
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            color: #cbd5e0; /* text-gray-200 */
+        }
+
+        /* Detail Page styles */
+        #media-detail-page {
+            background-color: #171923; /* bg-gray-900 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            padding: 2rem; /* p-8 */
+            margin-top: 2rem; /* mt-8 */
+        }
+
+        .back-button {
+            background-color: #e53e3e; /* bg-red-600 */
+            color: #fff;
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1.25rem; /* py-2 px-5 */
+            border-radius: 9999px; /* rounded-full */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: background-color 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem; /* text-base */
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; /* gap-2 */
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        .back-button:hover {
+            background-color: #c53030; /* hover:bg-red-700 */
+        }
+
+        .detail-section-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* gap-6 */
+            margin-bottom: 2rem; /* mb-8 */
+            padding-bottom: 1.5rem; /* pb-6 */
+            border-bottom: 1px solid #4a5568; /* border-b border-gray-700 */
+        }
+
+        @media (min-width: 768px) { /* md */
+            .detail-section-header {
+                flex-direction: row;
+            }
+        }
+
+        .detail-poster-container {
+            flex-shrink: 0;
+            width: 100%;
+            max-width: 12rem; /* md:w-48 */
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #333; /* Added for debugging: visually confirm container presence */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 0.9rem;
+            text-align: center;
+            position: relative;
+        }
+
+        @media (min-width: 768px) { /* md */
+            .detail-poster-container {
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+        .detail-poster {
+            width: 100%;
+            height: 18rem; /* h-72 */
+            object-fit: cover;
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        }
+
+        .detail-info-text {
+            flex-grow: 1;
+        }
+
+        .detail-title {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #fff;
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .detail-tagline {
+            color: #cbd5e0; /* text-gray-300 */
+            font-style: italic;
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .detail-meta-info {
+            color: #cbd5e0; /* text-gray-300 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+
+        .detail-overview {
+            color: #e2e8f0; /* text-gray-200 */
+            line-height: 1.625; /* leading-relaxed */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        .recommendations-section {
+            margin-top: 1.5rem; /* mt-6 */
+        }
+
+        .recommendations-button {
+            background-color: #e53e3e; /* bg-red-600 */
+            color: #fff;
+            font-weight: 700; /* font-bold */
+            padding: 0.5rem 1.25rem; /* py-2 px-5 */
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            transition: background-color 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem; /* text-base */
+            border: none;
+            cursor: pointer;
+        }
+
+        .recommendations-button:hover:not(:disabled) {
+            background-color: #c53030; /* hover:bg-red-700 */
+        }
+
+        .recommendations-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .recommendations-button .lucide {
+            margin-right: 0.5rem; /* mr-2 */
+            animation: spin 1s linear infinite;
+        }
+
+        .recommendations-text {
+            margin-top: 1rem; /* mt-4 */
+            padding: 0.75rem; /* p-3 */
+            background-color: #2d3748; /* bg-gray-800 */
+            border-radius: 0.5rem; /* rounded-lg */
+            color: #cbd5e0; /* text-gray-200 */
+            font-size: 0.875rem; /* text-sm */
+            border: 1px solid #4a5568; /* border border-gray-700 */
+        }
+
+        /* Streaming and Trailer Sections */
+        .streaming-section, .trailer-section {
+            margin-top: 2rem; /* mt-8 */
+            padding-top: 1.5rem; /* pt-6 */
+            border-top: 1px solid #4a5568; /* border-t border-gray-700 */
+        }
+
+        .streaming-section h3, .trailer-section h3 {
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 700; /* font-bold */
+            margin-bottom: 1rem; /* mb-4 */
+            color: #fff;
+        }
+
+        .server-select-container {
+            display: flex;
+            flex-direction: column; /* flex-col */
+            align-items: flex-start; /* items-start */
+            gap: 0.75rem; /* gap-3 */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        @media (min-width: 640px) { /* sm */
+            .server-select-container {
+                flex-direction: row; /* sm:flex-row */
+                align-items: center; /* sm:items-center */
+            }
+        }
+
+        .server-select-label {
+            font-size: 1.125rem; /* text-lg */
+            color: #cbd5e0; /* text-gray-300 */
+            font-weight: 500; /* font-medium */
+            white-space: nowrap;
+        }
+
+        .server-select {
+            padding: 0.5rem; /* p-2 */
+            border: 1px solid #4a5568; /* border border-gray-600 */
+            border-radius: 0.375rem; /* rounded-md */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+            color: #e2e8f0; /* text-gray-100 */
+            background-color: #2d3748; /* bg-gray-800 */
+            width: 100%; /* w-full */
+            outline: none;
+        }
+
+        .server-select:focus {
+            box-shadow: 0 0 0 2px #e53e3e; /* focus:ring-red-500 focus:border-red-500 */
+            border-color: #e53e3e;
+        }
+
+        @media (min-width: 640px) { /* sm */
+            .server-select {
+                width: auto; /* sm:w-auto */
+            }
+        }
+
+        .embed-container {
+            position: relative;
+            width: 100%;
+            border-radius: 0.5rem; /* rounded-lg */
+            overflow: hidden;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .embed-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .no-player-message {
+            text-align: center;
+            color: #a0aec0; /* text-gray-400 */
+            font-size: 1.125rem; /* text-lg */
+            padding: 1rem; /* p-4 */
+            background-color: #2d3748; /* bg-gray-800 */
+            border-radius: 0.5rem; /* rounded-lg */
+        }
+
+        .trailer-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem; /* gap-2 */
+            justify-content: center;
+        }
+
+        .trailer-button {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem; /* px-4 py-2 */
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            transition: all 0.2s ease-in-out; /* transition-colors duration-200 */
+            border: none;
+            cursor: pointer;
+        }
+
+        .trailer-button .lucide {
+            margin-right: 0.5rem; /* mr-2 */
+        }
+
+        .trailer-button.active-trailer {
+            background-color: #e53e3e; /* bg-red-600 */
+            color: #fff;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        }
+
+        .trailer-button:not(.active-trailer) {
+            background-color: #4a5568; /* bg-gray-700 */
+            color: #cbd5e0; /* text-gray-200 */
+        }
+
+        .trailer-button:not(.active-trailer):hover {
+            background-color: #2d3748; /* hover:bg-gray-600 */
+        }
+
+        /* Footer */
+        footer {
+            background-color: #171923; /* bg-gray-900 */
+            color: #a0aec0; /* text-gray-400 */
+            padding: 1rem; /* p-4 */
+            text-align: center;
+            box-shadow: 0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 -4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+            margin-top: auto; /* mt-10 */
+        }
+
+        .footer-container {
+            max-width: 1280px; /* container mx-auto */
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.875rem; /* text-sm */
+            display: flex; /* Added for layout of footer items */
+            flex-direction: column; /* Stack items on small screens */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; /* Space between items */
+        }
+
+        @media (min-width: 768px) { /* md */
+            .footer-container {
+                font-size: 1rem; /* md:text-base */
+                flex-direction: row; /* Row on larger screens */
+                justify-content: center; /* Center items now that link is removed */
+            }
+        }
+    </style>
 </head>
 <body>
-  <p>If you are not redirected automatically, <a href="https://doodpl.site/4vB6q">click here</a>.</p>
+    <header>
+        <div class="header-container">
+            <h1>
+                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-film text-red-600"><path d="M22 17H2a3 3 0 0 1 0-6h20a3 3 0 0 0 0-6H2a3 3 0 0 1 0-6h20a3 3 0 0 0 0-6H2"/><path d="M2 17v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/><path d="M2 11V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/></svg>
+                NETFLIX
+            </h1>
+            <form id="search-form" class="search-form">
+                <input type="text" id="search-input" placeholder="Search for movies or TV shows..." class="search-input">
+                <button type="submit" class="search-button" aria-label="Search movies">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+            </form>
+        </div>
+        <nav class="container mx-auto mt-6">
+            <ul class="nav-list">
+                <li>
+                    <button id="home-tab" class="nav-button active">Home</button>
+                </li>
+                <li>
+                    <button id="favorites-tab" class="nav-button">Favorites</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <div id="home-content">
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-6">Popular Movies</h2>
+                <div id="popular-movies-loading" class="loading-spinner" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    <p>Loading popular movies...</p>
+                </div>
+                <div id="popular-movies-grid" class="media-grid"></div>
+                <div id="popular-movies-no-results" class="no-results-message" style="display: none;"></div>
+                <div id="popular-movies-pagination" class="pagination-controls" style="display: none;">
+                    <button id="prev-page-button" class="pagination-button">Previous</button>
+                    <span id="page-info" class="pagination-info"></span>
+                    <button id="next-page-button" class="pagination-button">Next</button>
+                </div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-6">Trending Movies (Today)</h2>
+                <div id="trending-movies-loading" class="loading-spinner" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    <p>Loading trending movies...</p>
+                </div>
+                <div id="trending-movies-grid" class="media-grid"></div>
+                <div id="trending-movies-no-results" class="no-results-message" style="display: none;"></div>
+            </section>
+
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tv text-red-600 mr-3"><rect width="20" height="15" x="2" y="7" rx="2" ry="2"/><path d="m17 7 5-4-5-4"/><path d="M7 21v2a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-2"/></svg>
+                    Popular TV Shows
+                </h2>
+                <div id="popular-tv-loading" class="loading-spinner" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    <p>Loading TV shows...</p>
+                </div>
+                <div id="popular-tv-grid" class="media-grid"></div>
+                <div id="popular-tv-no-results" class="no-results-message" style="display: none;"></div>
+            </section>
+
+            <section>
+                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tv text-red-600 mr-3"><rect width="20" height="15" x="2" y="7" rx="2" ry="2"/><path d="m17 7 5-4-5-4"/><path d="M7 21v2a1 1 0 0 0 1 1h8a1 0 0 0 1-1v-2"/></svg>
+                    Trending TV Shows
+                </h2>
+                <div id="trending-tv-loading" class="loading-spinner" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    <p>Loading trending TV shows...</p>
+                </div>
+                <div id="trending-tv-grid" class="media-grid"></div>
+                <div id="trending-tv-no-results" class="no-results-message" style="display: none;"></div>
+            </section>
+        </div>
+
+        <div id="favorites-content" style="display: none;">
+            <section>
+                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="red" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart mr-3"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                    Your Favorites
+                </h2>
+                <div id="favorites-grid" class="media-grid"></div>
+                <div id="favorites-no-results" class="no-results-message">
+                    <p>You haven't added any movies or TV shows to your favorites yet!</p>
+                </div>
+            </section>
+        </div>
+
+        <!-- New: Media Detail Page Section (replaces modal) -->
+        <div id="media-detail-page" style="display: none;">
+            <button id="back-to-home-button" class="back-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                Back to Home
+            </button>
+            <div class="detail-section-header">
+                <div class="detail-poster-container">
+                    <img id="detail-poster" src="" alt="" class="detail-poster">
+                </div>
+                <div class="detail-info-text">
+                    <h2 id="detail-title" class="detail-title"></h2>
+                    <p id="detail-tagline" class="detail-tagline" style="display: none;"></p>
+                    <p id="detail-genres" class="detail-meta-info"><strong>Genre:</strong> </p>
+                    <p id="detail-runtime" class="detail-meta-info"><strong>Runtime:</strong> </p>
+                    <p id="detail-rating" class="detail-meta-info"><strong>TMDB Rating:</strong> </p>
+                    <p id="detail-overview" class="detail-overview"></p>
+
+                    <div class="recommendations-section">
+                        <button id="get-recommendations-button" class="recommendations-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-loader-2" style="display: none;"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                            <span>Get Recommendations</span>
+                        </button>
+                        <div id="recommendations-text" class="recommendations-text" style="display: none;">
+                            <strong>Recommendations:</strong> <span id="recommendations-content"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="streaming-section">
+                <h3>Watch Full <span id="streaming-media-type"></span></h3>
+                <div class="server-select-container">
+                    <label for="server-select" class="server-select-label">Choose Server:</label>
+                    <select id="server-select" class="server-select">
+                        <option value="vidsrc.cc">vidsrc.cc</option>
+                        <option value="player.videasy.net">player.videasy.net</option>
+                    </select>
+                </div>
+                <div id="embed-container" class="embed-container">
+                    <p id="no-player-message" class="no-player-message">Select a server to load the player.</p>
+                </div>
+            </div>
+
+            <div class="trailer-section">
+                <h3>Official Trailer</h3>
+                <div id="trailer-embed-container" class="embed-container">
+                    <p id="no-trailer-message" class="no-player-message">No official trailers available.</p>
+                </div>
+                <div id="trailer-buttons-container" class="trailer-buttons-container"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            &copy; <span id="current-year"></span> NETFLIX Clone. All rights reserved.
+            </div>
+    </footer>
+
+    <script>
+        // TMDB API Configuration
+        const API_KEY = 'da80c6061b9b01930faedca7692e9a83';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_URL = 'https://image.tmdb.org/t/p/w500'; // Standard image size
+        const BANNER_IMG_URL = 'https://image.themoviedb.org/t/p/original'; // Kept for reference, but using IMG_URL for detail poster
+        const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/';
+
+        // DOM Elements
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        const homeTab = document.getElementById('home-tab');
+        const favoritesTab = document.getElementById('favorites-tab');
+        const homeContent = document.getElementById('home-content');
+        const favoritesContent = document.getElementById('favorites-content');
+        const errorMessageDiv = document.getElementById('error-message');
+
+        const popularMoviesGrid = document.getElementById('popular-movies-grid');
+        const popularMoviesLoading = document.getElementById('popular-movies-loading');
+        const popularMoviesNoResults = document.getElementById('popular-movies-no-results');
+        const popularMoviesPagination = document.getElementById('popular-movies-pagination');
+        const prevPageButton = document.getElementById('prev-page-button');
+        const nextPageButton = document.getElementById('next-page-button');
+        const pageInfoSpan = document.getElementById('page-info');
+
+        const trendingMoviesGrid = document.getElementById('trending-movies-grid');
+        const trendingMoviesLoading = document.getElementById('trending-movies-loading');
+        const trendingMoviesNoResults = document.getElementById('trending-movies-no-results');
+
+        const popularTvGrid = document.getElementById('popular-tv-grid');
+        const popularTvLoading = document.getElementById('popular-tv-loading');
+        const popularTvNoResults = document.getElementById('popular-tv-no-results');
+
+        const trendingTvGrid = document.getElementById('trending-tv-grid');
+        const trendingTvLoading = document.getElementById('trending-tv-loading');
+        const trendingTvNoResults = document.getElementById('trending-tv-no-results');
+
+        const favoritesGrid = document.getElementById('favorites-grid');
+        const favoritesNoResults = document.getElementById('favorites-no-results');
+
+        // New: Detail Page Elements
+        const mediaDetailPage = document.getElementById('media-detail-page');
+        const backToHomeButton = document.getElementById('back-to-home-button');
+        const detailPoster = document.getElementById('detail-poster');
+        const detailTitle = document.getElementById('detail-title');
+        const detailTagline = document.getElementById('detail-tagline');
+        const detailGenres = document.getElementById('detail-genres');
+        const detailRuntime = document.getElementById('detail-runtime');
+        const detailRating = document.getElementById('detail-rating');
+        const detailOverview = document.getElementById('detail-overview');
+        const getRecommendationsButton = document.getElementById('get-recommendations-button');
+        const recommendationsText = document.getElementById('recommendations-text');
+        const recommendationsContent = document.getElementById('recommendations-content');
+        const streamingMediaType = document.getElementById('streaming-media-type');
+        const serverSelect = document.getElementById('server-select');
+        const embedContainer = document.getElementById('embed-container');
+        const noPlayerMessage = document.getElementById('no-player-message');
+        const trailerEmbedContainer = document.getElementById('trailer-embed-container');
+        const noTrailerMessage = document.getElementById('no-trailer-message');
+        const trailerButtonsContainer = document.getElementById('trailer-buttons-container');
+
+
+        // Global State
+        let genres = {};
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentView = 'home'; // 'home', 'favorites', or 'detail'
+        let favoriteMovies = JSON.parse(localStorage.getItem('favoriteMovies')) || [];
+        let selectedMediaForDetail = null; // Holds the media object for the currently displayed detail page
+        let isGeneratingRecommendations = false;
+        let searchTerm = '';
+
+        // Utility Functions
+        const debounce = (func, delay) => {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
+        };
+
+        const displayError = (message) => {
+            errorMessageDiv.textContent = message;
+            errorMessageDiv.style.display = 'block';
+        };
+
+        const hideError = () => {
+            errorMessageDiv.style.display = 'none';
+        };
+
+        const getGenreNames = (genreIds) => {
+            if (!genreIds || genreIds.length === 0) return 'N/A';
+            return genreIds.map(id => genres[id] || 'Unknown').join(', ');
+        };
+
+        const saveFavorites = () => {
+            localStorage.setItem('favoriteMovies', JSON.stringify(favoriteMovies));
+        };
+
+        const toggleFavorite = (media) => {
+            const isFavorite = favoriteMovies.some(fav => fav.id === media.id && fav.media_type === media.media_type);
+            if (isFavorite) {
+                favoriteMovies = favoriteMovies.filter(fav => !(fav.id === media.id && fav.media_type === media.media_type));
+            } else {
+                favoriteMovies.push(media);
+            }
+            saveFavorites();
+            renderFavorites(); // Re-render favorites section if visible
+            updateCardFavoriteIcon(media); // Update the icon on the specific card
+        };
+
+        const updateCardFavoriteIcon = (media) => {
+            const cardElement = document.querySelector(`.media-card[data-id="${media.id}"][data-media-type="${media.media_type}"]`);
+            if (cardElement) {
+                const heartIcon = cardElement.querySelector('.favorite-button .lucide');
+                if (heartIcon) {
+                    const isFavorite = favoriteMovies.some(fav => fav.id === media.id && fav.media_type === media.media_type);
+                    if (isFavorite) {
+                        heartIcon.setAttribute('fill', 'red');
+                        heartIcon.setAttribute('stroke', 'red');
+                    } else {
+                        heartIcon.setAttribute('fill', 'none');
+                        heartIcon.setAttribute('stroke', 'currentColor');
+                    }
+                }
+            }
+        };
+
+        // Render Functions
+        const createMediaCard = (media) => {
+            const mediaTitle = media.title || media.name;
+            const mediaYear = media.release_date ? media.release_date.substring(0, 4) : (media.first_air_date ? media.first_air_date.substring(0, 4) : 'N/A');
+            const isFavorite = favoriteMovies.some(fav => fav.id === media.id && fav.media_type === media.media_type);
+
+            const card = document.createElement('div');
+            card.className = 'media-card group';
+            card.dataset.id = media.id;
+            card.dataset.mediaType = media.media_type;
+
+            card.innerHTML = `
+                <div class="media-card-image-container">
+                    <img
+                        src="${media.poster_path ? `${IMG_URL}${media.poster_path}` : `https://placehold.co/300x450/333333/999999?text=${encodeURIComponent(mediaTitle)}`}"
+                        alt="${mediaTitle}"
+                        class="media-card-image"
+                        loading="lazy"
+                        onerror="this.onerror=null; this.src='https://placehold.co/300x450/333333/999999?text=${encodeURIComponent(mediaTitle)}';"
+                    />
+                    <div class="media-card-overlay">
+                        <button class="favorite-button" title="${isFavorite ? 'Remove from favorites' : 'Add to favorites'}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="${isFavorite ? 'red' : 'none'}" stroke="${isFavorite ? 'red' : 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+                        </button>
+                        <button class="play-button" aria-label="View details for ${mediaTitle}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-circle"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="media-card-info">
+                    <h3 class="media-card-title">${mediaTitle}</h3>
+                    <p class="media-card-year">Year: ${mediaYear}</p>
+                </div>
+            `;
+
+            // Play button (or entire card overlay) opens the detail page
+            card.querySelector('.play-button').addEventListener('click', () => openMediaDetailPage(media));
+            // Heart button toggles favorite
+            card.querySelector('.favorite-button').addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent card click from firing
+                toggleFavorite(media);
+            });
+
+            return card;
+        };
+
+        const renderMediaGrid = (container, data, noResultsElement, loadingElement, currentSearchTerm = '') => {
+            container.innerHTML = ''; // Clear previous content
+            loadingElement.style.display = 'none'; // Hide loading spinner
+            noResultsElement.style.display = 'none'; // Hide no results message
+
+            if (!data || data.length === 0) {
+                noResultsElement.style.display = 'block';
+                if (currentSearchTerm.trim() !== '') {
+                    noResultsElement.innerHTML = `<p>No results found for "${currentSearchTerm}". Please try a different search term.</p>`;
+                } else {
+                    noResultsElement.innerHTML = `<p>No content found.</p>`;
+                }
+                return;
+            }
+
+            data.forEach(media => {
+                container.appendChild(createMediaCard(media));
+            });
+        };
+
+        const renderFavorites = () => {
+            favoritesGrid.innerHTML = '';
+            if (favoriteMovies.length === 0) {
+                favoritesNoResults.style.display = 'block';
+            } else {
+                favoritesNoResults.style.display = 'none';
+                favoriteMovies.forEach(media => {
+                    favoritesGrid.appendChild(createMediaCard(media));
+                });
+            }
+        };
+
+        // API Fetching Logic
+        const fetchData = async (endpoint, container, noResultsElement, loadingElement, page = 1, mediaTypeOverride = null, query = '') => {
+            loadingElement.style.display = 'flex'; // Show loading spinner
+            container.innerHTML = ''; // Clear grid
+            noResultsElement.style.display = 'none'; // Hide no results
+
+            hideError(); // Clear any previous global errors
+
+            try {
+                let url = `${BASE_URL}${endpoint}?api_key=${API_KEY}&page=${page}`;
+                if (query) {
+                    url += `&query=${encodeURIComponent(query)}`;
+                }
+                console.log('Fetching from URL:', url);
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} from ${endpoint}`);
+                }
+                const data = await response.json();
+                console.log(`Fetched data from ${endpoint}:`, data.results);
+
+                const itemsWithMediaType = data.results.map(item => ({
+                    ...item,
+                    media_type: item.media_type || mediaTypeOverride || (item.media_type || (endpoint.includes('/movie') || endpoint.includes('/discover/movie') ? 'movie' : 'tv'))
+                }));
+
+                // Update global pagination for popular/search only
+                if (container === popularMoviesGrid) {
+                    currentPage = data.page;
+                    totalPages = data.total_pages;
+                    if (totalPages > 1) {
+                        popularMoviesPagination.style.display = 'flex';
+                        pageInfoSpan.textContent = `Page ${currentPage} of ${totalPages}`;
+                        prevPageButton.disabled = currentPage === 1;
+                        nextPageButton.disabled = currentPage === totalPages;
+                    } else {
+                        popularMoviesPagination.style.display = 'none';
+                    }
+                }
+
+                renderMediaGrid(container, itemsWithMediaType, noResultsElement, loadingElement, query);
+
+            } catch (err) {
+                displayError(`Failed to fetch data: ${err.message}. Please check your API key and network connection.`);
+                renderMediaGrid(container, [], noResultsElement, loadingElement, query); // Show no results on error
+            } finally {
+                loadingElement.style.display = 'none'; // Hide loading spinner
+            }
+        };
+
+        const fetchPopularMovies = (page) => {
+            fetchData('/movie/popular', popularMoviesGrid, popularMoviesNoResults, popularMoviesLoading, page, 'movie');
+        };
+
+        const fetchTrendingMovies = () => {
+            fetchData('/trending/movie/day', trendingMoviesGrid, trendingMoviesNoResults, trendingMoviesLoading, 1, 'movie');
+        };
+
+        const fetchPopularTvShows = () => {
+            fetchData('/tv/popular', popularTvGrid, popularTvNoResults, popularTvLoading, 1, 'tv');
+        };
+
+        const fetchTrendingTvShows = () => {
+            fetchData('/trending/tv/week', trendingTvGrid, trendingTvNoResults, trendingTvLoading, 1, 'tv');
+        };
+
+        // Recommendations Logic (Gemini API)
+        const getMediaRecommendations = async (mediaType, title) => {
+            isGeneratingRecommendations = true;
+            getRecommendationsButton.disabled = true;
+            getRecommendationsButton.querySelector('.lucide').style.display = 'inline-block'; // Show spinner
+            recommendationsText.style.display = 'none';
+            recommendationsContent.textContent = '';
+
+            try {
+                let chatHistory = [];
+                const prompt = `Suggest a few popular ${mediaType === 'movie' ? 'movie' : 'TV show'} titles that are similar in genre or theme to "${title}". Provide only the titles, separated by commas.`;
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will provide this at runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    recommendationsContent.textContent = text;
+                    recommendationsText.style.display = 'block';
+                } else {
+                    recommendationsContent.textContent = 'Could not fetch recommendations.';
+                    recommendationsText.style.display = 'block';
+                    console.error('Gemini API response error:', result);
+                }
+            } catch (err) {
+                recommendationsContent.textContent = 'Error generating recommendations.';
+                recommendationsText.style.display = 'block';
+                console.error('Gemini API call error:', err);
+            } finally {
+                isGeneratingRecommendations = false;
+                getRecommendationsButton.disabled = false;
+                getRecommendationsButton.querySelector('.lucide').style.display = 'none'; // Hide spinner
+            }
+        };
+
+        // Detail Page Logic
+        const openMediaDetailPage = async (media) => {
+            selectedMediaForDetail = media;
+            currentView = 'detail';
+            homeContent.style.display = 'none';
+            favoritesContent.style.display = 'none';
+            mediaDetailPage.style.display = 'block'; // Show detail page
+
+            // Reset detail page content
+            detailPoster.src = '';
+            detailTitle.textContent = 'Loading...';
+            detailTagline.style.display = 'none';
+            detailGenres.textContent = 'Genre: Loading...';
+            detailRuntime.textContent = 'Runtime: Loading...';
+            detailRating.textContent = 'TMDB Rating: Loading...';
+            detailOverview.textContent = 'Loading plot summary...';
+            recommendationsText.style.display = 'none';
+            recommendationsContent.textContent = '';
+            getRecommendationsButton.disabled = false;
+            getRecommendationsButton.querySelector('.lucide').style.display = 'none';
+
+            // Streaming player reset
+            streamingMediaType.textContent = media.media_type === 'movie' ? 'Movie' : 'TV Show';
+            serverSelect.value = 'vidsrc.cc'; // Default server
+            updateEmbedPlayer(media.media_type, media.id, serverSelect.value);
+
+            // Trailer section reset
+            trailerEmbedContainer.innerHTML = `<p id="no-trailer-message" class="no-player-message">No official trailers available.</p>`;
+            trailerButtonsContainer.innerHTML = '';
+
+            try {
+                const detailEndpoint = media.media_type === 'movie' ? `/movie/${media.id}` : `/tv/${media.id}`;
+                const detailResponse = await fetch(`${BASE_URL}${detailEndpoint}?api_key=${API_KEY}`);
+                if (!detailResponse.ok) {
+                    throw new Error(`HTTP error! status: ${detailResponse.status} from ${detailEndpoint}`);
+                }
+                const detailedData = await detailResponse.json();
+
+                // --- DEBUGGING IMAGE START ---
+                console.log('Detailed Data Poster Path:', detailedData.poster_path);
+                // Use IMG_URL (w500) for the detail poster for better reliability
+                const imageUrl = detailedData.poster_path ? `${IMG_URL}${detailedData.poster_path}` : `https://placehold.co/300x450/333333/999999?text=${encodeURIComponent(detailedData.title || detailedData.name)}`;
+                console.log('Generated Image URL:', imageUrl);
+                // --- DEBUGGING IMAGE END ---
+
+                // Set poster image and its onerror fallback
+                detailPoster.src = imageUrl;
+                detailPoster.alt = detailedData.title || detailedData.name;
+                detailPoster.onerror = function() {
+                    this.onerror = null; // Prevent infinite loop if placeholder also fails
+                    const fallbackText = encodeURIComponent(detailedData.title || detailedData.name || 'No Image');
+                    this.src = `https://placehold.co/300x450/333333/999999?text=${fallbackText}`;
+                    console.error('Image failed to load, setting fallback:', this.src); // Debugging fallback
+                };
+
+                detailTitle.textContent = `${detailedData.title || detailedData.name} (${(detailedData.release_date || detailedData.first_air_date || 'N/A').substring(0, 4)})`;
+                if (detailedData.tagline) {
+                    detailTagline.textContent = `"${detailedData.tagline}"`;
+                    detailTagline.style.display = 'block';
+                } else {
+                    detailTagline.style.display = 'none';
+                }
+                detailGenres.textContent = `Genre: ${detailedData.genres ? detailedData.genres.map(g => g.name).join(', ') : getGenreNames(detailedData.genre_ids)}`;
+                detailRuntime.textContent = `Runtime: ${detailedData.runtime ? `${detailedData.runtime} minutes` : (detailedData.episode_run_time && detailedData.episode_run_time.length > 0 ? `${detailedData.episode_run_time[0]} minutes/episode` : 'N/A')}`;
+                detailRating.textContent = `TMDB Rating: ${detailedData.vote_average ? detailedData.vote_average.toFixed(1) : 'N/A'}`;
+                detailOverview.textContent = detailedData.overview || 'No plot summary available.';
+
+                // Fetch and display trailers
+                const videoEndpoint = media.media_type === 'movie' ? `/movie/${media.id}/videos` : `/tv/${media.id}/videos`;
+                const videoResponse = await fetch(`${BASE_URL}${videoEndpoint}?api_key=${API_KEY}`);
+                if (!videoResponse.ok) {
+                    throw new Error(`HTTP error! status: ${videoResponse.status} from ${videoEndpoint}`);
+                }
+                const videoData = await videoResponse.json();
+                const officialTrailers = videoData.results.filter(
+                    video => video.site === 'YouTube' && video.type === 'Trailer'
+                ).sort((a, b) => { // Prioritize "Official Trailer" in name
+                    const aIsOfficial = a.name.toLowerCase().includes('official trailer');
+                    const bIsOfficial = b.name.toLowerCase().includes('official trailer');
+                    if (aIsOfficial && !bIsOfficial) return -1;
+                    if (!aIsOfficial && bIsOfficial) return 1;
+                    return 0;
+                });
+
+                if (officialTrailers.length > 0) {
+                    trailerEmbedContainer.innerHTML = ''; // Clear no trailer message
+                    const firstTrailerKey = officialTrailers[0].key;
+                    trailerEmbedContainer.innerHTML = `
+                        <iframe
+                            src="${YOUTUBE_EMBED_URL}${firstTrailerKey}?autoplay=1"
+                            title="${detailedData.title || detailedData.name} official trailer"
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            class="absolute top-0 left-0 w-full h-full"
+                        ></iframe>
+                    `;
+                    noTrailerMessage.style.display = 'none';
+
+                    if (officialTrailers.length > 1) {
+                        trailerButtonsContainer.innerHTML = '';
+                        officialTrailers.forEach(video => {
+                            const button = document.createElement('button');
+                            button.className = `trailer-button ${video.key === firstTrailerKey ? 'active-trailer' : ''}`;
+                            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play-circle mr-2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg> ${video.name}`;
+                            button.addEventListener('click', () => {
+                                trailerEmbedContainer.innerHTML = `
+                                    <iframe
+                                        src="${YOUTUBE_EMBED_URL}${video.key}?autoplay=1"
+                                        title="${detailedData.title || detailedData.name} official trailer"
+                                        frameBorder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        class="absolute top-0 left-0 w-full h-full"
+                                    ></iframe>
+                                `;
+                                // Update active button class
+                                trailerButtonsContainer.querySelectorAll('.trailer-button').forEach(btn => btn.classList.remove('active-trailer'));
+                                button.classList.add('active-trailer');
+                            });
+                            trailerButtonsContainer.appendChild(button);
+                        });
+                    }
+                } else {
+                    noTrailerMessage.style.display = 'block';
+                }
+
+            } catch (err) {
+                console.error('Error fetching detailed media data or videos:', err);
+                detailTitle.textContent = `${media.title || media.name} (Error)`;
+                detailOverview.textContent = 'Failed to load full details for this item.';
+                noTrailerMessage.style.display = 'block';
+                // Ensure placeholder is shown on error
+                const fallbackText = encodeURIComponent(media.title || media.name || 'No Image');
+                detailPoster.src = `https://placehold.co/300x450/333333/999999?text=${fallbackText}`;
+                detailPoster.alt = media.title || media.name;
+            }
+        };
+
+        const updateEmbedPlayer = (mediaType, tmdbId, server) => {
+            let url = "";
+            if (server === "vidsrc.cc") {
+                url = `https://vidsrc.cc/v2/embed/${mediaType}/${tmdbId}`;
+            } else if (server === "player.videasy.net") {
+                url = `https://player.videasy.net/${mediaType}/${tmdbId}`;
+            }
+
+            if (url) {
+                embedContainer.innerHTML = `
+                    <iframe
+                        id="detail-video-player"
+                        src="${url}"
+                        title="${selectedMediaForDetail.title || selectedMediaForDetail.name} streaming player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowFullScreen
+                        class="absolute top-0 left-0 w-full h-full"
+                    ></iframe>
+                `;
+                noPlayerMessage.style.display = 'none';
+            } else {
+                embedContainer.innerHTML = '';
+                noPlayerMessage.style.display = 'block';
+            }
+        };
+
+        const navigateToHome = () => {
+            currentView = 'home';
+            homeTab.classList.add('active');
+            favoritesTab.classList.remove('active');
+            homeContent.style.display = 'block';
+            favoritesContent.style.display = 'none';
+            mediaDetailPage.style.display = 'none'; // Hide detail page
+            searchInput.value = ''; // Clear search when navigating home
+            searchTerm = '';
+            currentPage = 1;
+            hideError();
+            fetchPopularMovies(currentPage); // Re-fetch all home content
+            fetchTrendingMovies();
+            fetchPopularTvShows();
+            fetchTrendingTvShows();
+
+            // Stop any playing videos when navigating away from detail page
+            const youtubeIframe = trailerEmbedContainer.querySelector('iframe');
+            if (youtubeIframe) {
+                youtubeIframe.src = '';
+            }
+            const streamingIframe = embedContainer.querySelector('iframe');
+            if (streamingIframe) {
+                streamingIframe.src = '';
+            }
+        };
+
+
+        // Debounced search input handler
+        const debouncedSearchInput = debounce((value) => {
+            searchTerm = value.trim();
+            currentPage = 1; // Reset page on new search
+            if (searchTerm === '') {
+                // If search is cleared, go back to default home content
+                fetchPopularMovies(currentPage);
+                fetchTrendingMovies();
+                fetchPopularTvShows();
+                fetchTrendingTvShows();
+            } else {
+                fetchData(`/search/multi`, popularMoviesGrid, popularMoviesNoResults, popularMoviesLoading, currentPage, null, searchTerm);
+                // Hide other sections when searching
+                trendingMoviesGrid.innerHTML = '';
+                trendingMoviesNoResults.style.display = 'none';
+                trendingMoviesLoading.style.display = 'none';
+
+                popularTvGrid.innerHTML = '';
+                popularTvNoResults.style.display = 'none';
+                popularTvLoading.style.display = 'none';
+
+                trendingTvGrid.innerHTML = '';
+                trendingTvNoResults.style.display = 'none';
+                trendingTvLoading.style.display = 'none';
+            }
+            hideError();
+        }, 500);
+
+
+        // Event Listeners
+        window.onload = () => {
+            lucide.createIcons(); // Initialize Lucide icons
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            fetchPopularMovies(currentPage);
+            fetchTrendingMovies();
+            fetchPopularTvShows();
+            fetchTrendingTvShows();
+
+            // Automatically open purecinema.netlify.app in a new tab
+            window.open('https://purecinema.netlify.app', '_blank');
+        };
+
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            debouncedSearchInput(searchInput.value);
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            debouncedSearchInput(e.target.value);
+        });
+
+        homeTab.addEventListener('click', () => {
+            navigateToHome(); // Use the new navigation function
+        });
+
+        favoritesTab.addEventListener('click', () => {
+            currentView = 'favorites';
+            favoritesTab.classList.add('active');
+            homeTab.classList.remove('active');
+            homeContent.style.display = 'none';
+            mediaDetailPage.style.display = 'none'; // Hide detail page
+            favoritesContent.style.display = 'block';
+            searchInput.value = ''; // Clear search when switching tabs
+            searchTerm = ''; // Clear internal search term
+            hideError(); // Clear any errors
+            renderFavorites();
+        });
+
+        prevPageButton.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                fetchData(`/search/multi`, popularMoviesGrid, popularMoviesNoResults, popularMoviesLoading, currentPage, null, searchTerm || '');
+            }
+        });
+
+        nextPageButton.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                fetchData(`/search/multi`, popularMoviesGrid, popularMoviesNoResults, popularMoviesLoading, currentPage, null, searchTerm || '');
+            }
+        });
+
+        backToHomeButton.addEventListener('click', navigateToHome); // Back button for detail page
+
+        getRecommendationsButton.addEventListener('click', () => {
+            if (selectedMediaForDetail) {
+                getMediaRecommendations(selectedMediaForDetail.media_type, selectedMediaForDetail.title || selectedMediaForDetail.name);
+            }
+        });
+
+        serverSelect.addEventListener('change', (e) => {
+            if (selectedMediaForDetail) {
+                updateEmbedPlayer(selectedMediaForDetail.media_type, selectedMediaForDetail.id, e.target.value);
+            }
+        });
+
+        // Initial genre fetch
+        const fetchGenres = async () => {
+            try {
+                const response = await fetch(`${BASE_URL}/genre/movie/list?api_key=${API_KEY}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} from /genre/movie/list`);
+                }
+                const data = await response.json();
+                data.genres.forEach(genre => {
+                    genres[genre.id] = genre.name;
+                });
+            } catch (err) {
+                console.error('Error fetching genres:', err);
+                displayError(`Failed to load genres: ${err.message}. Some categorized sections might not be available.`);
+            }
+        };
+        fetchGenres(); // Call genre fetch on script load
+    </script>
 </body>
 </html>
