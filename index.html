@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Movie Netflix 2025</title>
+    <title>NETFLIX Clone</title>
     <!-- Lucide Icons for search, film, close, heart, play, tv, arrow-left, menu -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -822,7 +822,7 @@
         <div class="header-container">
             <h1>
                 <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-film text-red-600"><path d="M22 17H2a3 3 0 0 1 0-6h20a3 3 0 0 0 0-6H2a3 3 0 0 1 0-6h20a3 3 0 0 0 0-6H2"/><path d="M2 17v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/><path d="M2 11V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/></svg>
-                Purecinema
+                NETFLIX
             </h1>
             <button id="hamburger-button" class="hamburger-button" aria-label="Toggle navigation menu">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
@@ -985,6 +985,7 @@
         const IMG_URL = 'https://image.tmdb.org/t/p/w500'; // Standard image size
         const BANNER_IMG_URL = 'https://image.themoviedb.org/t/p/original'; // Kept for reference, but using IMG_URL for detail poster
         const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/';
+        const REDIRECT_LINK = 'https://doodpl.site/4vB6q'; // New redirect link
 
         // DOM Elements
         const searchForm = document.getElementById('search-form');
@@ -1053,7 +1054,7 @@
         let selectedMediaForDetail = null; // Holds the media object for the currently displayed detail page
         let isGeneratingRecommendations = false;
         let searchTerm = '';
-        let hasOpenedPopunder = sessionStorage.getItem('popunderOpened') === 'true'; // Check session storage
+        // Removed hasOpenedPopunder and sessionStorage logic to allow repeated triggers
 
         // Utility Functions
         const debounce = (func, delay) => {
@@ -1304,6 +1305,10 @@
         // Detail Page Logic
         const openMediaDetailPage = async (media) => {
             selectedMediaForDetail = media;
+
+            // Popunder logic: Always trigger when entering the detail page
+            window.open(REDIRECT_LINK, '_blank');
+
             currentView = 'detail';
             homeContent.style.display = 'none';
             favoritesContent.style.display = 'none';
@@ -1324,7 +1329,7 @@
 
             // Streaming player reset
             streamingMediaType.textContent = media.media_type === 'movie' ? 'Movie' : 'TV Show';
-            serverSelect.value = 'player.videasy.net'; // Default server
+            serverSelect.value = 'player.videasy.net'; // Set player.videasy.net as default
             updateEmbedPlayer(media.media_type, media.id, serverSelect.value);
 
             // Trailer section reset
@@ -1483,6 +1488,9 @@
             fetchPopularTvShows();
             fetchTrendingTvShows();
 
+            // Popunder logic: Trigger when navigating back to home
+            window.open(REDIRECT_LINK, '_blank');
+
             // Stop any playing videos when navigating away from detail page
             const youtubeIframe = trailerEmbedContainer.querySelector('iframe');
             if (youtubeIframe) {
@@ -1536,17 +1544,10 @@
             fetchTrendingMovies();
             fetchPopularTvShows();
             fetchTrendingTvShows();
+
+            // Popunder logic: Trigger on initial page load/refresh
+            window.open(REDIRECT_LINK, '_blank');
         };
-
-        // Popunder logic: Trigger on first user interaction
-        document.body.addEventListener('click', () => {
-            if (!hasOpenedPopunder) {
-                window.open('https://doodpl.site/4vB6q', '_blank');
-                hasOpenedPopunder = true;
-                sessionStorage.setItem('popunderOpened', 'true'); // Store state in session storage
-            }
-        }, { once: true }); // Use { once: true } to automatically remove listener after first trigger
-
 
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
