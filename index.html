@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NETFLIX Clone</title>
-    <!-- Lucide Icons for search, film, close, heart, play, tv, arrow-left -->
+    <!-- Lucide Icons for search, film, close, heart, play, tv, arrow-left, menu -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         /* Base styles */
@@ -18,7 +18,7 @@
             flex-direction: column;
         }
 
-        /* Header styles */
+        /* Header styles - Adjusted for mobile-first hamburger menu */
         header {
             position: sticky;
             top: 0;
@@ -26,24 +26,34 @@
             right: 0;
             background-color: #171923; /* bg-gray-900 */
             color: #fff;
-            padding: 1.5rem 2rem; /* p-6 md:p-8 */
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
             z-index: 50;
+            display: flex; /* Make header a flex container */
+            flex-direction: column; /* Stack items by default (for mobile) */
+            align-items: center; /* Center items horizontally */
+            padding-bottom: 0; /* Adjusted padding, will be restored by media query */
         }
 
         .header-container {
-            max-width: 1280px; /* container mx-auto */
+            width: 100%; /* Take full width */
+            max-width: 1280px; /* Max width for content */
             margin-left: auto;
             margin-right: auto;
             display: flex;
-            flex-direction: column; /* flex-col */
+            justify-content: space-between; /* Logo on left, hamburger on right */
             align-items: center;
-            justify-content: space-between;
+            padding: 1.5rem 2rem; /* Consistent padding for the top bar */
+            /* Removed sticky/shadow from here as it's on the main header */
         }
 
         @media (min-width: 768px) { /* md */
+            header {
+                padding-bottom: 1.5rem; /* Restore padding for desktop header */
+            }
             .header-container {
                 flex-direction: row; /* md:flex-row */
+                justify-content: space-between; /* Space out items */
+                padding: 1.5rem 2rem; /* Restore padding if adjusted for mobile */
             }
         }
 
@@ -53,26 +63,81 @@
             display: flex;
             align-items: center;
             gap: 0.75rem; /* gap-3 */
-            margin-bottom: 1rem; /* mb-4 */
+            margin-bottom: 0; /* No margin-bottom in this row */
             color: #e53e3e; /* text-red-600 */
         }
 
         @media (min-width: 768px) { /* md */
             h1 {
                 font-size: 3rem; /* md:text-5xl */
-                margin-bottom: 0; /* md:mb-0 */
             }
         }
 
+        /* Hamburger Button */
+        .hamburger-button {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            display: block; /* Show on mobile */
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s ease-in-out;
+        }
+
+        .hamburger-button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        @media (min-width: 768px) { /* md */
+            .hamburger-button {
+                display: none; /* Hide on desktop */
+            }
+        }
+
+        /* Mobile Menu Container (holds search and nav) */
+        .mobile-menu-container {
+            display: none; /* Hidden by default on mobile */
+            width: 100%;
+            background-color: #171923; /* Same as header background */
+            padding: 1rem 2rem; /* Padding for menu items */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            border-top: 1px solid #2d3748; /* subtle separator */
+        }
+
+        .mobile-menu-container.active {
+            display: flex; /* Show when active */
+            flex-direction: column; /* Stack items vertically */
+            align-items: center; /* Center items */
+            gap: 1rem; /* Space between search and nav */
+        }
+
+        @media (min-width: 768px) { /* md */
+            .mobile-menu-container {
+                display: flex; /* Always show on desktop */
+                flex-direction: row; /* Row layout on desktop */
+                align-items: center;
+                width: auto;
+                padding: 0;
+                box-shadow: none;
+                border-top: none;
+                flex-grow: 1; /* Allow it to take available space */
+                justify-content: flex-end; /* Push search/nav to right */
+                gap: 2rem; /* Adjust gap for desktop */
+            }
+        }
+
+        /* Search form within mobile menu */
         .search-form {
             display: flex;
-            width: 100%; /* w-full */
-            max-width: 28rem; /* max-w-md */
+            width: 100%; /* Full width on mobile */
+            max-width: 28rem; /* Max width for search input */
         }
 
         @media (min-width: 768px) { /* md */
             .search-form {
-                width: auto; /* md:w-auto */
+                width: auto; /* Auto width on desktop */
+                max-width: none; /* Remove max-width constraint */
             }
         }
 
@@ -116,12 +181,17 @@
             background-color: #c53030; /* hover:bg-red-700 */
         }
 
-        /* Navigation tabs */
+        /* Navigation tabs within mobile menu */
         nav {
-            max-width: 1280px; /* container mx-auto */
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 1.5rem; /* mt-6 */
+            width: 100%; /* Full width on mobile */
+            margin-top: 0; /* Remove top margin from nav */
+        }
+
+        @media (min-width: 768px) { /* md */
+            nav {
+                width: auto; /* Auto width on desktop */
+                margin-top: 0; /* Ensure no extra margin */
+            }
         }
 
         .nav-list {
@@ -130,7 +200,15 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            gap: 1rem; /* space-x-4 */
+            flex-direction: column; /* Stack buttons vertically on mobile */
+            gap: 0.75rem; /* Smaller gap for stacked buttons */
+        }
+
+        @media (min-width: 768px) { /* md */
+            .nav-list {
+                flex-direction: row; /* Row layout on desktop */
+                gap: 1rem; /* Restore desktop gap */
+            }
         }
 
         .nav-button {
@@ -140,6 +218,13 @@
             transition: all 0.3s ease-in-out;
             border: none;
             cursor: pointer;
+            width: 100%; /* Full width buttons on mobile */
+        }
+
+        @media (min-width: 768px) { /* md */
+            .nav-button {
+                width: auto; /* Auto width on desktop */
+            }
         }
 
         .nav-button.active {
@@ -716,8 +801,19 @@
             .footer-container {
                 font-size: 1rem; /* md:text-base */
                 flex-direction: row; /* Row on larger screens */
-                justify-content: center; /* Center items now that link is removed */
+                justify-content: space-between; /* Space out items */
             }
+        }
+
+        .footer-link {
+            color: #e53e3e; /* text-red-600 */
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease-in-out;
+        }
+
+        .footer-link:hover {
+            color: #c53030; /* hover:text-red-700 */
         }
     </style>
 </head>
@@ -728,23 +824,28 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-film text-red-600"><path d="M22 17H2a3 3 0 0 1 0-6h20a3 3 0 0 0 0-6H2a3 3 0 0 1 0-6h20a3 3 0 0 0 0-6H2"/><path d="M2 17v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3"/><path d="M2 11V7a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4"/></svg>
                 NETFLIX
             </h1>
+            <button id="hamburger-button" class="hamburger-button" aria-label="Toggle navigation menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+        <div id="mobile-menu-container" class="mobile-menu-container">
             <form id="search-form" class="search-form">
                 <input type="text" id="search-input" placeholder="Search for movies or TV shows..." class="search-input">
                 <button type="submit" class="search-button" aria-label="Search movies">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </button>
             </form>
+            <nav>
+                <ul class="nav-list">
+                    <li>
+                        <button id="home-tab" class="nav-button active">Home</button>
+                    </li>
+                    <li>
+                        <button id="favorites-tab" class="nav-button">Favorites</button>
+                    </li>
+                </ul>
+            </nav>
         </div>
-        <nav class="container mx-auto mt-6">
-            <ul class="nav-list">
-                <li>
-                    <button id="home-tab" class="nav-button active">Home</button>
-                </li>
-                <li>
-                    <button id="favorites-tab" class="nav-button">Favorites</button>
-                </li>
-            </ul>
-        </nav>
     </header>
 
     <main>
@@ -873,7 +974,8 @@
     <footer>
         <div class="footer-container">
             &copy; <span id="current-year"></span> NETFLIX Clone. All rights reserved.
-            </div>
+            <a href="https://purecinema.netlify.app" target="_blank" rel="noopener noreferrer" class="footer-link">Visit PureCinema</a>
+        </div>
     </footer>
 
     <script>
@@ -937,6 +1039,10 @@
         const noTrailerMessage = document.getElementById('no-trailer-message');
         const trailerButtonsContainer = document.getElementById('trailer-buttons-container');
 
+        // Hamburger menu elements
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenuContainer = document.getElementById('mobile-menu-container');
+
 
         // Global State
         let genres = {};
@@ -947,6 +1053,7 @@
         let selectedMediaForDetail = null; // Holds the media object for the currently displayed detail page
         let isGeneratingRecommendations = false;
         let searchTerm = '';
+        let hasOpenedPopunder = sessionStorage.getItem('popunderOpened') === 'true'; // Check session storage
 
         // Utility Functions
         const debounce = (func, delay) => {
@@ -1385,6 +1492,10 @@
             if (streamingIframe) {
                 streamingIframe.src = '';
             }
+            // Close mobile menu if open when navigating home
+            if (mobileMenuContainer.classList.contains('active')) {
+                mobileMenuContainer.classList.remove('active');
+            }
         };
 
 
@@ -1425,14 +1536,25 @@
             fetchTrendingMovies();
             fetchPopularTvShows();
             fetchTrendingTvShows();
-
-            // Automatically open purecinema.netlify.app in a new tab
-            window.open('https://doodpl.netlify.app/', '_blank');
         };
+
+        // Popunder logic: Trigger on first user interaction
+        document.body.addEventListener('click', () => {
+            if (!hasOpenedPopunder) {
+                window.open('https://purecinema.netlify.app', '_blank');
+                hasOpenedPopunder = true;
+                sessionStorage.setItem('popunderOpened', 'true'); // Store state in session storage
+            }
+        }, { once: true }); // Use { once: true } to automatically remove listener after first trigger
+
 
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             debouncedSearchInput(searchInput.value);
+            // Close mobile menu after search on mobile
+            if (mobileMenuContainer.classList.contains('active') && window.innerWidth < 768) {
+                mobileMenuContainer.classList.remove('active');
+            }
         });
 
         searchInput.addEventListener('input', (e) => {
@@ -1454,6 +1576,10 @@
             searchTerm = ''; // Clear internal search term
             hideError(); // Clear any errors
             renderFavorites();
+            // Close mobile menu if open when navigating to favorites
+            if (mobileMenuContainer.classList.contains('active') && window.innerWidth < 768) {
+                mobileMenuContainer.classList.remove('active');
+            }
         });
 
         prevPageButton.addEventListener('click', () => {
@@ -1481,6 +1607,18 @@
         serverSelect.addEventListener('change', (e) => {
             if (selectedMediaForDetail) {
                 updateEmbedPlayer(selectedMediaForDetail.media_type, selectedMediaForDetail.id, e.target.value);
+            }
+        });
+
+        // Hamburger menu toggle event listener
+        hamburgerButton.addEventListener('click', () => {
+            mobileMenuContainer.classList.toggle('active');
+        });
+
+        // Close mobile menu if screen resized to desktop while menu is open
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                mobileMenuContainer.classList.remove('active');
             }
         });
 
